@@ -1,7 +1,10 @@
 <?php
 
-use App\Http\Controllers\FormController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CategoryController;
+// use App\Http\Controllers\FormController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FrontController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,29 +17,50 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+
 
 require __DIR__.'/auth.php';
+Route::get('/',[FrontController::class,'index'])->name('welcome');
 
+Route::get('show/{id}',[BlogController::class,'show'])->name('blog.show');
 Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
     Route::view('/form','form')->name('form');
+    // Route::get('/',[FrontController::class,'index'])->name('welcome');
+    Route::get('blog/create',[BlogController::class,'create'])->name('blog.create');
+    Route::get('update/{id}',[BlogController::class,'update'])->name('blog.simple');
+   
 
-    Route::post('store',[FormController::class,'store'])->name('store');
 
-    Route::get('table',[FormController::class,'index'])->name('table');
 
-    Route::get('edit/{id}',[FormController::class,'edit'])->name('edit');
+    Route::get('blog/index',[BlogController::class,'index'])->name('blog.index');
+    Route::post('store',[BlogController::class,'store'])->name('store');
+    Route::get('table',[BlogController::class,'index'])->name('table');
+    // Route::get('edit/{id}',[FormController::class,'edit'])->name('edit');
+    Route::get('edit/{id}',[BlogController::class,'edit'])->name('blog.simple');
+    Route::post('update/{id}',[BlogController::class,'update'])->name('update');
+    Route::get('delete/{id}',[BlogController::class,'delete'])->name('delete');
+    Route::get('create',[BlogController::class,'create'])->name('blog.create');
 
-    Route::post('update/{id}',[FormController::class,'update'])->name('update');
+    Route::view('category/create','category/create')->name('category.create');
+    Route::post('category/store',[CategoryController::class,'store'])->name('category.store');
+    Route::get('category/index',[CategoryController::class,'index'])->name('category.index');
+    Route::get('category/edit/{id}',[CategoryController::class,'edit'])->name('category.edit');
+    Route::post('category/update/{id}',[CategoryController::class,'update'])->name('category.update');
+    Route::get('category/delete/{id}',[CategoryController::class,'delete'])->name('category.delete');
 
-    Route::get('delete/{id}',[FormController::class,'delete'])->name('delete');
-    //
+
+
+
+
+
 });
 
 
